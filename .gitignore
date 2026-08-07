@@ -1,0 +1,17 @@
+# Environment variables (contains API keys - NEVER commit this)
+.env
+
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Uploaded PDFs (user data, don't need to be in repo)
+data/raw_pdfs/*
+!data/raw_pdfs/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
