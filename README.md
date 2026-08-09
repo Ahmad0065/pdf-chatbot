@@ -2,6 +2,8 @@
 
 An intelligent PDF chatbot that lets you upload one or more PDFs and ask questions about their content — with hybrid retrieval, reranking, conversation memory, and automatic web search fallback for questions outside the document's scope.
 
+🔗 **Live Demo**: [ahmed-pdf-chatbot.streamlit.app](https://ahmed-pdf-chatbot.streamlit.app)
+
 ## Features
 
 - 📤 **Multi-PDF upload** — chat across multiple documents at once
