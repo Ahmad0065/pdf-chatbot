@@ -5,3 +5,6 @@ faiss-cpu
 groq
 python-dotenv
 streamlit
+rank-bm25
+qdrant-client
+tavily-python
