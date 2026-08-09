@@ -15,7 +15,8 @@ def chunk_pages(pages: list[dict], chunk_size: int = 1000, chunk_overlap: int = 
                 "chunk_id": chunk_id,
                 "text": chunk_text,
                 "page_number": page["page_number"],
-                "source_file": page["source_file"],   # naya field carry forward
+                "source_file": page["source_file"], 
+                "file_hash": page.get("file_hash"),   # naya field carry forward
             })
             chunk_id += 1
     return chunks

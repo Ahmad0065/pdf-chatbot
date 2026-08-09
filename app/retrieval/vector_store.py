@@ -17,13 +17,25 @@ class VectorStore:
         self._ensure_collection()
 
     def _ensure_collection(self):
-        """Creates the collection if it doesn't already exist."""
+        """Creates the collection if it doesn't already exist, and ensures file_hash is indexed for filtering."""
+        from qdrant_client.models import PayloadSchemaType
+
         existing = [c.name for c in self.client.get_collections().collections]
         if self.collection_name not in existing:
             self.client.create_collection(
                 collection_name=self.collection_name,
                 vectors_config=VectorParams(size=self.dimension, distance=Distance.COSINE),
             )
+
+        # Create an index on file_hash so we can filter by it (needed for duplicate detection)
+        try:
+            self.client.create_payload_index(
+                collection_name=self.collection_name,
+                field_name="file_hash",
+                field_schema=PayloadSchemaType.KEYWORD,
+            )
+        except Exception:
+            pass  # index already exists — safe to ignore
 
     def add(self, embeddings, chunks: list[dict]):
         points = []
@@ -48,3 +60,15 @@ class VectorStore:
             chunk["score"] = float(r.score)
             output.append(chunk)
         return output
+    def hash_exists(self, file_hash: str) -> bool:
+        """Checks if any chunk with this file_hash is already stored."""
+        from qdrant_client.models import Filter, FieldCondition, MatchValue
+        results = self.client.scroll(
+            collection_name=self.collection_name,
+            scroll_filter=Filter(
+                must=[FieldCondition(key="file_hash", match=MatchValue(value=file_hash))]
+            ),
+            limit=1,
+        )
+        points, _ = results
+        return len(points) > 0
